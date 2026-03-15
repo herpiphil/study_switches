@@ -123,9 +123,9 @@ binary_sensor:
     on_press:
       then:
         - zigbee.report: zb
-    on_multi_click:             # 5-second hold → factory reset and re-pair
+    on_multi_click:             # 5-second hold → leave network and re-pair
       - timing:
           - ON for at least 5s
         then:
-          - logger.log: "Factory reset triggered — device will re-pair"
-          - zigbee.factory_reset: zb
+          - logger.log: "Zigbee reset triggered — leaving network to re-pair"
+          - zigbee.reset: zb
