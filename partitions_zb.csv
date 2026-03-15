@@ -1,4 +1,4 @@
-# Zigbee partition table for ESP32-C6 with 4MB flash
+# Zigbee partition table for ESP32-H2 with 4MB flash
 # Explicit offsets required — app0 must sit at 0x10000 (esptool default)
 # Total used: ~3.45MB, fits within 4MB flash
 #

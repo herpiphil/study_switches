@@ -3,7 +3,7 @@
 ## Last updated: 2026-03-15
 
 ## Hardware
-- ESP32-C6 Mini (devkitc-1 compatible), 4MB flash
+- ESP32-H2 Mini (devkitc-1 compatible), 4MB flash, no WiFi
 - 5 momentary push buttons wired GPIO → GND, internal pull-ups
 
 ## Pin Assignments
@@ -17,7 +17,7 @@
 
 ## Software
 - ESPHome: 2026.2.2
-- Framework: ESP-IDF (Arduino not supported for C6 Zigbee)
+- Framework: ESP-IDF (Arduino not supported for H2 Zigbee)
 - External component: luar123/zigbee_esphome
 - Zigbee role: End Device (not router)
 
@@ -30,8 +30,9 @@
 | context.md          | This file |
 
 ## Current Status
-- v0.1: YAML written, not yet compiled or flashed
-- Not yet paired to Zigbee network
+- v0.3: Chip corrected to ESP32-H2. Compiled OK. Flash failing — overlap error
+  in ESPHome's write-flash command under investigation.
+- Not yet successfully flashed or paired
 
 ## How to Flash
 ```bash

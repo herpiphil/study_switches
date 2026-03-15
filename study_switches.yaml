@@ -1,14 +1,12 @@
 # ============================================================
 # study_switches.yaml
 # Date:    2026-03-15
-# Version: 0.2
-# Summary: Fix partition table — explicit offsets, app0 at 0x10000
-#          to match esptool default and prevent merge-bin overlap error.
+# Version: 0.3
+# Summary: Correct chip from ESP32-C6 to ESP32-H2 (confirmed by esptool).
 #          Five momentary buttons — Light 1, Light 2, Light 3,
-#          Fan, All Off. No WiFi. All automation in Home Assistant.
-#          Long-press All Off (5s) triggers Zigbee factory reset
-#          to allow re-pairing.
-# Board:   ESP32-C6 Mini (assumed devkitc-1 compatible, 4MB flash)
+#          Fan, All Off. No WiFi (H2 has none). All automation in HA.
+#          Long-press All Off (5s) triggers Zigbee leave/re-pair.
+# Board:   ESP32-H2 Mini (devkitc-1 compatible, 4MB flash)
 # Pins:    GPIO1=Light1, GPIO10=Light2, GPIO11=Light3,
 #          GPIO13=Fan, GPIO14=All Off
 # ============================================================
@@ -17,18 +15,18 @@ esphome:
   name: study-switches
   friendly_name: "Study Switches"
 
-# External Zigbee component — supports ESP32-C6 as Zigbee end device
+# External Zigbee component — supports ESP32-H2 as Zigbee end device
 external_components:
   - source: github://luar123/zigbee_esphome
     components: [zigbee]
 
 esp32:
-  board: esp32-c6-devkitc-1
-  variant: esp32c6
+  board: esp32-h2-devkitc-1
+  variant: esp32h2
   flash_size: 4MB
   partitions: partitions_zb.csv   # custom partition table required for Zigbee
   framework:
-    type: esp-idf                  # Arduino framework not supported on C6 Zigbee
+    type: esp-idf                  # Arduino framework not supported on H2 Zigbee
 
 logger:
   level: INFO
