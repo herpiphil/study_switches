@@ -6,7 +6,7 @@
 #          Five momentary buttons — Light 1, Light 2, Light 3,
 #          Fan, All Off. No WiFi (H2 has none). All automation in HA.
 #          Long-press All Off (5s) triggers Zigbee leave/re-pair.
-# Board:   ESP32-H2 Mini (devkitc-1 compatible, 4MB flash)
+# Board:   ESP32-H2 Mini (devkitm-1 compatible, 4MB flash)
 # Pins:    GPIO1=Light1, GPIO10=Light2, GPIO11=Light3,
 #          GPIO13=Fan, GPIO14=All Off
 # ============================================================
@@ -21,7 +21,7 @@ external_components:
     components: [zigbee]
 
 esp32:
-  board: esp32-h2-devkitc-1
+  board: esp32-h2-devkitm-1
   variant: esp32h2
   flash_size: 4MB
   partitions: partitions_zb.csv   # custom partition table required for Zigbee

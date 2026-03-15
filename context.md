@@ -3,7 +3,7 @@
 ## Last updated: 2026-03-15
 
 ## Hardware
-- ESP32-H2 Mini (devkitc-1 compatible), 4MB flash, no WiFi
+- ESP32-H2 Mini (board: esp32-h2-devkitm-1), 4MB flash, no WiFi
 - 5 momentary push buttons wired GPIO → GND, internal pull-ups
 
 ## Pin Assignments
