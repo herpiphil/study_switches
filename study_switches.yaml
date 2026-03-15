@@ -1,8 +1,9 @@
 # ============================================================
 # study_switches.yaml
 # Date:    2026-03-15
-# Version: 0.1
-# Summary: Initial config. ESP32-C6 Mini as Zigbee end device.
+# Version: 0.2
+# Summary: Fix partition table — explicit offsets, app0 at 0x10000
+#          to match esptool default and prevent merge-bin overlap error.
 #          Five momentary buttons — Light 1, Light 2, Light 3,
 #          Fan, All Off. No WiFi. All automation in Home Assistant.
 #          Long-press All Off (5s) triggers Zigbee factory reset
