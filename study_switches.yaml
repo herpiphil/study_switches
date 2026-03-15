@@ -1,0 +1,131 @@
+# ============================================================
+# study_switches.yaml
+# Date:    2026-03-15
+# Version: 0.1
+# Summary: Initial config. ESP32-C6 Mini as Zigbee end device.
+#          Five momentary buttons — Light 1, Light 2, Light 3,
+#          Fan, All Off. No WiFi. All automation in Home Assistant.
+#          Long-press All Off (5s) triggers Zigbee factory reset
+#          to allow re-pairing.
+# Board:   ESP32-C6 Mini (assumed devkitc-1 compatible, 4MB flash)
+# Pins:    GPIO1=Light1, GPIO10=Light2, GPIO11=Light3,
+#          GPIO13=Fan, GPIO14=All Off
+# ============================================================
+
+esphome:
+  name: study-switches
+  friendly_name: "Study Switches"
+
+# External Zigbee component — supports ESP32-C6 as Zigbee end device
+external_components:
+  - source: github://luar123/zigbee_esphome
+    components: [zigbee]
+
+esp32:
+  board: esp32-c6-devkitc-1
+  variant: esp32c6
+  flash_size: 4MB
+  partitions: partitions_zb.csv   # custom partition table required for Zigbee
+  framework:
+    type: esp-idf                  # Arduino framework not supported on C6 Zigbee
+
+logger:
+  level: INFO
+
+# ── Zigbee end device ────────────────────────────────────────
+# components: all  →  automatically creates one Zigbee endpoint
+# per binary_sensor defined below. HA will see these as binary
+# sensors (contact/button type) and automations can fire on state
+# change.
+zigbee:
+  id: zb
+  components: all
+  manufacturer: "DIY"
+  name: "Study Switches"
+  router: false           # end device, not a router
+  on_join:
+    then:
+      - logger.log: "Joined Zigbee network"
+
+# ── Physical buttons ─────────────────────────────────────────
+# Wired between GPIO and GND. Internal pull-up enabled.
+# Inverted so that pressed = true. 10ms debounce on both edges.
+# on_press sends an immediate Zigbee state report.
+# Long-press (5s) on All Off triggers factory reset for re-pairing.
+binary_sensor:
+
+  - platform: gpio
+    pin:
+      number: GPIO1
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "Light 1"
+    id: btn_light1
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 10ms
+    on_press:
+      then:
+        - zigbee.report: zb
+
+  - platform: gpio
+    pin:
+      number: GPIO10
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "Light 2"
+    id: btn_light2
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 10ms
+    on_press:
+      then:
+        - zigbee.report: zb
+
+  - platform: gpio
+    pin:
+      number: GPIO11
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "Light 3"
+    id: btn_light3
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 10ms
+    on_press:
+      then:
+        - zigbee.report: zb
+
+  - platform: gpio
+    pin:
+      number: GPIO13
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "Fan"
+    id: btn_fan
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 10ms
+    on_press:
+      then:
+        - zigbee.report: zb
+
+  - platform: gpio
+    pin:
+      number: GPIO14
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "All Off"
+    id: btn_all_off
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 10ms
+    on_press:
+      then:
+        - zigbee.report: zb
+    on_multi_click:             # 5-second hold → factory reset and re-pair
+      - timing:
+          - ON for at least 5s
+        then:
+          - logger.log: "Factory reset triggered — device will re-pair"
+          - zigbee.factory_reset: zb
