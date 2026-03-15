@@ -30,15 +30,20 @@
 | context.md          | This file |
 
 ## Current Status
-- v0.3: Chip corrected to ESP32-H2. Compiled OK. Flash failing — overlap error
-  in ESPHome's write-flash command under investigation.
-- Not yet successfully flashed or paired
+- v0.3.1: Compiled and flashed successfully via direct esptool call.
+  Note: esphome run has a write-flash overlap bug with this platform — use
+  esphome compile then flash manually (see How to Flash below).
+- Not yet paired to Zigbee network
 
 ## How to Flash
+`esphome run` has a write-flash overlap bug with this platform. Use:
 ```bash
-esphome run study_switches.yaml
+esphome compile study_switches.yaml
+/home/casg/.local/share/pipx/venvs/esphome/bin/python -m esptool \
+  --port /dev/ttyACM0 --chip esp32h2 --baud 460800 write-flash 0x0 \
+  .esphome/build/study-switches/.pioenvs/study-switches/firmware.factory.bin
 ```
-Connect ESP32-C6 via USB before running.
+Connect ESP32-H2 via USB before running.
 
 ## Re-pairing
 Hold the All Off button (GPIO14) for 5 seconds to trigger factory reset and re-pair.
