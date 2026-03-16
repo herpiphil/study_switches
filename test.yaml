@@ -1,0 +1,58 @@
+# ============================================================
+# test.yaml
+# Date:    2026-03-16
+# Version: 0.1
+# Summary: Minimal test — one button on GPIO10, Zigbee end device.
+#          Used to verify Zigbee joining and button reporting
+#          before building full study_switches config.
+# Board:   ESP32-H2 Mini (esp32-h2-devkitm-1, 4MB flash)
+# ============================================================
+
+esphome:
+  name: study-test
+  friendly_name: "Study Test"
+
+external_components:
+  - source: github://luar123/zigbee_esphome
+    components: [zigbee]
+
+esp32:
+  board: esp32-h2-devkitm-1
+  variant: esp32h2
+  flash_size: 4MB
+  partitions: partitions_zb.csv
+  framework:
+    type: esp-idf
+
+logger:
+  level: DEBUG
+
+zigbee:
+  id: zb
+  components: all
+  manufacturer: "DIY"
+  name: "Study Test"
+  router: false
+  on_join:
+    then:
+      - logger.log: "Joined Zigbee network"
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO10
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "Button"
+    id: btn
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 10ms
+    on_press:
+      then:
+        - logger.log: "Button PRESSED"
+        - zigbee.report: zb
+    on_release:
+      then:
+        - logger.log: "Button RELEASED"
+        - zigbee.report: zb
