@@ -1,0 +1,60 @@
+# ============================================================
+# test_c6.yaml
+# Date:    2026-03-16
+# Version: 0.1
+# Summary: Minimal test — one button on GPIO10, Zigbee end device.
+#          ESP32-C6 DevKitC-1 WROOM-1, 8MB flash.
+#          Testing Zigbee join reliability vs H2 Mini.
+# Board:   ESP32-C6-DevKitC-1 (WROOM-1, 8MB flash)
+# ============================================================
+
+esphome:
+  name: study-test-c6
+  friendly_name: "Study Test C6"
+
+external_components:
+  - source: github://luar123/zigbee_esphome
+    components: [zigbee]
+
+esp32:
+  board: esp32-c6-devkitc-1
+  variant: esp32c6
+  flash_size: 8MB
+  partitions: partitions_zb_8mb.csv
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      CONFIG_ESPTOOLPY_FLASHSIZE_8MB: "y"
+
+logger:
+  level: DEBUG
+
+zigbee:
+  id: zb
+  components: all
+  manufacturer: "DIY"
+  name: "Study Test C6"
+  router: false
+  on_join:
+    then:
+      - logger.log: "Joined Zigbee network"
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO10
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "Button"
+    id: btn
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 10ms
+    on_press:
+      then:
+        - logger.log: "Button PRESSED"
+        - zigbee.report: zb
+    on_release:
+      then:
+        - logger.log: "Button RELEASED"
+        - zigbee.report: zb
